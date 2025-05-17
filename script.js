@@ -1184,3 +1184,34 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebas
       }
     }, 100);
   });
+
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('firebase-messaging-sw.js')
+    .then(reg => {
+      console.log('Service Worker Registered', reg);
+    }).catch(err => {
+      console.error('Service Worker registration failed', err);
+    });
+}
+
+
+document.getElementById('btn-show-notifications')?.addEventListener('click', showNotifications);
+document.getElementById('btn-close-notifications')?.addEventListener('click', closeNotifications);
+
+
+document.getElementById('btn-get-current-location')?.addEventListener('click', async () => {
+  try {
+    const position = await getCurrentLocation();
+    document.getElementById('donorLatitude').value = position.lat;
+    document.getElementById('donorLongitude').value = position.lng;
+
+    if (!locationPickerMap) initLocationPickerMap();
+    locationMarker.setPosition(position);
+    locationPickerMap.setCenter(position);
+
+    showMessage("تم تحديد موقعك بنجاح");
+  } catch (e) {
+    showMessage(e, 'error');
+  }
+});
